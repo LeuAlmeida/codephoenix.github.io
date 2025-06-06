@@ -160,6 +160,17 @@ python -m scanner.tests.test_date_comparison
    - Don't store sensitive data
    - Use secure storage for tokens
 
+- ## Next Steps
+
+- [ ] WebSocket for real-time results
+- [ ] Results export (CSV, JSON)
+- [ ] Scan history
+- [ ] Metrics dashboard
+- [ ] Integration with other APIs (GitLab, Bitbucket)
+- [ ] Alert system
+- [ ] Complete REST API
+- [ ] Grant > 99% accuracy in type detection 
+
 ## License
 
 This project is licensed under the MIT License. Use responsibly and respect GitHub's terms of service.
