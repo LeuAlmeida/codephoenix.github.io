@@ -74,7 +74,7 @@ function showCommandInterface(command) {
                     </div>
                     <ol class="list-decimal list-inside space-y-2 text-sm text-gray-300">
                         <li>Clone the scanner repository:
-                            <pre class="bg-gray-900 p-2 mt-1 rounded text-xs">git clone https://github.com/LeuAlmeida/codephoenix-threat-hunting scanner</pre>
+                            <pre class="bg-gray-900 p-2 mt-1 rounded text-xs">git clone https://github.com/LeuAlmeida/codephoenix.github.io scanner</pre>
                         </li>
                         <li>Copy the command above</li>
                         <li>Open Terminal in the scanner directory</li>

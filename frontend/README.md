@@ -36,7 +36,7 @@ cd github-scanner
 git clone https://github.com/your-username/codephoenix-frontend
 
 # Clone the backend scanner
-git clone https://github.com/LeuAlmeida/codephoenix-threat-hunting scanner
+git clone https://github.com/LeuAlmeida/codephoenix.github.io scanner
 ```
 
 ### 2. Start the Frontend
@@ -160,7 +160,7 @@ For production deployment, consider:
 
 ## 🔗 Related Projects
 
-- [GitHub Threat Hunting Script](https://github.com/LeuAlmeida/codephoenix-threat-hunting) - The backend scanner used by this frontend
+- [GitHub Threat Hunting Script](https://github.com/LeuAlmeida/codephoenix.github.io) - The backend scanner used by this frontend
 
 ## 📄 License
 
