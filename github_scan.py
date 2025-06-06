@@ -50,16 +50,66 @@ headers = {
 }
 
 def search_github(term, page, date_range=None):
-    query = f'{term} in:file'
-    if date_range:
-        query += f' created:{date_range}'
-    url = f'https://api.github.com/search/code?q={query}&page={page}&per_page={RESULTS_PER_PAGE}'
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json().get('items', [])
+    """Busca no GitHub com múltiplas estratégias para emails"""
+    import urllib.parse
+    
+    queries = []
+    
+    if '@' in term:
+        email_parts = term.split('@')
+        username = email_parts[0]
+        domain = email_parts[1]
+        queries.append(f'"{term}" in:file')
+        queries.append(f'{term} in:file')
+        queries.append(f'"{domain}" in:file')
+        queries.append(f'{username} {domain} in:file')
+        
     else:
-        print(f"Erro {response.status_code}: {response.text}")
-        return []
+        queries.append(f'"{term}" in:file')
+        queries.append(f'{term} in:file')
+    
+    if date_range:
+        queries = [f'{q} created:{date_range}' for q in queries]
+    
+    for i, query in enumerate(queries):
+        print(f"🔍 Tentativa {i+1}/{len(queries)} - Query: {query}")
+        
+        encoded_query = urllib.parse.quote(query)
+        url = f'https://api.github.com/search/code?q={encoded_query}&page={page}&per_page={RESULTS_PER_PAGE}'
+        
+        print(f"🌐 URL: {url}")
+        
+        response = requests.get(url, headers=headers)
+        print(f"📊 Status: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            total_count = data.get('total_count', 0)
+            items = data.get('items', [])
+            print(f"📈 Total encontrado: {total_count}, Retornados nesta página: {len(items)}")
+            
+            if items:  # Se encontrou resultados, retorna
+                return items
+            else:
+                print(f"🚫 Nenhum resultado para esta query, tentando próxima...")
+                
+        elif response.status_code == 403:
+            print(f"⚠️  Rate limit atingido. Aguarde um momento...")
+            print(f"Detalhes: {response.headers.get('X-RateLimit-Remaining', 'N/A')} requests restantes")
+            return []
+        elif response.status_code == 422:
+            print(f"⚠️  Query inválida, tentando próxima...")
+            print(f"Detalhes: {response.text}")
+            continue
+        else:
+            print(f"❌ Erro {response.status_code}: {response.text}")
+            continue
+            
+        # Pequena pausa entre tentativas
+        time.sleep(0.5)
+    
+    print(f"🚫 Nenhuma das {len(queries)} estratégias de busca retornou resultados")
+    return []
 
 def main():
     if not reload_env_config():
