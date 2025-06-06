@@ -1,0 +1,30 @@
+# Ambiente virtual
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Arquivos de configuração locais
+.env
+.vscode/
+.idea/
+
+# Arquivos de ambiente
+*.env
+!.env.example
+
+# Logs
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Exemplo de variáveis de ambiente sensíveis
+# GITHUB_TOKEN
+# SEARCH_TERM
+# START_DATE
+# END_DATE
+
