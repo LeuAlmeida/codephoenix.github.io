@@ -49,25 +49,151 @@ headers = {
     'Accept': 'application/vnd.github.v3+json'
 }
 
-def search_github(term, page, date_range=None):
-    """Busca no GitHub com múltiplas estratégias para emails"""
-    import urllib.parse
+def detect_data_type(term):
+    """Detecta o tipo de dado baseado no padrão do termo"""
+    import re
     
+    if '@' in term and '.' in term and not term.lower().startswith(('http', 'ftp')):
+        return 'email'
+    if any(term.lower().startswith(proto) for proto in ['http://', 'https://', 'ftp://', 'ftps://']):
+        return 'url'
+    if term.count('.') >= 1 and '/' in term and not '@' in term:
+        return 'url'
+    
+    if term.upper().startswith('AKIA'):  # AWS Access Key
+        return 'aws_key'
+    if len(term) == 40 and re.match(r'^[A-Za-z0-9+/=]+$', term):  # AWS Secret Key pattern
+        return 'aws_secret'
+    
+    if term.lower().startswith(('ghp_', 'gho_', 'ghu_', 'ghs_', 'ghr_')):  # GitHub tokens
+        return 'github_token'
+    if term.lower().startswith(('sk-', 'pk_')):  # Stripe, OpenAI patterns
+        return 'api_key'
+    if term.lower().startswith('bearer '):
+        return 'bearer_token'
+    
+    if term.count('.') == 2 and len(term) > 50:
+        return 'jwt_token'
+    
+    if any(db in term.lower() for db in ['mongodb://', 'mysql://', 'postgresql://', 'redis://']):
+        return 'database_url'
+    
+    if any(keyword in term.lower() for keyword in ['password', 'passwd', 'pwd']):
+        return 'password'
+    if 'secret' in term.lower() and not any(kw in term.lower() for kw in ['key', 'token', 'api']):
+        return 'password'
+    
+    if any(keyword in term.lower() for keyword in ['api_key', 'apikey', 'token', 'key']) and len(term) > 10:
+        return 'api_key'
+    if re.match(r'^[A-Za-z0-9]{20,}$', term):
+        return 'api_key'
+    
+    return 'generic'
+
+def generate_search_queries(term, data_type):
+    """Gera queries de busca específicas para cada tipo de dado"""
     queries = []
     
-    if '@' in term:
+    if data_type == 'email':
         email_parts = term.split('@')
         username = email_parts[0]
         domain = email_parts[1]
-        queries.append(f'"{term}" in:file')
-        queries.append(f'{term} in:file')
-        queries.append(f'"{domain}" in:file')
-        queries.append(f'{username} {domain} in:file')
-        
-    else:
-        queries.append(f'"{term}" in:file')
-        queries.append(f'{term} in:file')
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'"{domain}" in:file',
+            f'{username} {domain} in:file',
+            f'"mailto:{term}" in:file',
+            f'email:"{term}" in:file'
+        ])
     
+    elif data_type == 'url':
+        # Remove protocol for variations
+        clean_url = term.replace('https://', '').replace('http://', '').replace('ftp://', '')
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'"{clean_url}" in:file',
+            f'{clean_url} in:file',
+            f'url:"{term}" in:file',
+            f'href="{term}" in:file'
+        ])
+    
+    elif data_type in ['api_key', 'github_token', 'bearer_token']:
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'token:"{term}" in:file',
+            f'key:"{term}" in:file',
+            f'api_key:"{term}" in:file',
+            f'apikey:"{term}" in:file',
+            f'Authorization:"{term}" in:file',
+            f'Bearer {term} in:file'
+        ])
+    
+    elif data_type == 'aws_key':
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'AWS_ACCESS_KEY_ID:"{term}" in:file',
+            f'access_key:"{term}" in:file',
+            f'aws_access_key:"{term}" in:file'
+        ])
+    
+    elif data_type == 'aws_secret':
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'AWS_SECRET_ACCESS_KEY:"{term}" in:file',
+            f'secret_key:"{term}" in:file',
+            f'aws_secret:"{term}" in:file'
+        ])
+    
+    elif data_type == 'jwt_token':
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'jwt:"{term}" in:file',
+            f'token:"{term}" in:file'
+        ])
+    
+    elif data_type == 'database_url':
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'DATABASE_URL:"{term}" in:file',
+            f'connection_string:"{term}" in:file'
+        ])
+    
+    elif data_type == 'password':
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file',
+            f'password:"{term}" in:file',
+            f'passwd:"{term}" in:file',
+            f'pwd:"{term}" in:file'
+        ])
+    
+    else:  # generic
+        queries.extend([
+            f'"{term}" in:file',
+            f'{term} in:file'
+        ])
+    
+    return queries
+
+def search_github(term, page, date_range=None):
+    """Busca no GitHub com estratégias inteligentes baseadas no tipo de dado"""
+    import urllib.parse
+    
+    # Detecta o tipo de dado
+    data_type = detect_data_type(term)
+    print(f"🔍 Tipo detectado: {data_type.upper()}")
+    
+    # Gera queries específicas para o tipo
+    queries = generate_search_queries(term, data_type)
+    
+    # Adiciona filtro de data se especificado
     if date_range:
         queries = [f'{q} created:{date_range}' for q in queries]
     
