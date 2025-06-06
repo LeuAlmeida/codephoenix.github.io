@@ -1,203 +1,280 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png" />
+    <link rel="manifest" href="assets/site.webmanifest" />
+
     <title>CodePhoenix - GitHub Security Scanner</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'git-dark': '#0d1117',
-                        'git-border': '#30363d',
-                        'git-accent': '#f85149',
-                        'git-success': '#3fb950',
-                        'git-warning': '#d29922'
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "git-dark": "#0d1117",
+              "git-border": "#30363d",
+              "git-accent": "#f85149",
+              "git-success": "#3fb950",
+              "git-warning": "#d29922",
+            },
+          },
+        },
+      };
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-git-dark text-white min-h-screen">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-git-dark text-white min-h-screen">
     <!-- Header -->
     <header class="border-b border-git-border bg-git-dark/50 backdrop-blur">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center space-x-3">
-                <div class="w-20 h-20 from-git-accent to-git-warning rounded-lg flex items-center justify-center">
-                    <img src="./assets/icons/icon.png" alt="CodePhoenix" class="w-20 h-20">
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-white">CodePhoenix</h1>
-                    <p class="text-gray-400 text-sm">Intelligent GitHub Security Scanner</p>
-                </div>
-            </div>
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 from-git-accent to-git-warning rounded-lg flex items-center justify-center"
+          >
+            <img
+              src="assets/icons/icon.png"
+              alt="CodePhoenix"
+              class="w-10 h-10"
+            />
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">CodePhoenix</h1>
+            <p class="text-gray-400 text-sm">
+              Intelligent GitHub Security Scanner
+            </p>
+          </div>
         </div>
+      </div>
     </header>
 
     <main class="container mx-auto px-6 py-8">
-        <!-- Configuration Form -->
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-gray-800 rounded-xl border border-git-border p-6 mb-8">
-                <h2 class="text-xl font-semibold mb-6 flex items-center">
-                    <i class="fas fa-cog mr-2 text-git-accent"></i>
-                    Scanner Configuration
-                </h2>
-                
-                <form id="scanForm" class="space-y-6">
-                    <!-- GitHub Token -->
-                    <div>
-                        <label class="block text-sm font-medium mb-2">GitHub Token</label>
-                        <div class="relative">
-                            <input type="password" id="githubToken" 
-                                   class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-git-accent focus:border-transparent"
-                                   placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                                   required>
-                            <button type="button" onclick="togglePassword('githubToken')" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white">
-                                <i class="fas fa-eye" id="githubToken-eye"></i>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-400 mt-1">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Get it from: <a href="https://github.com/settings/tokens" target="_blank" class="text-git-accent hover:underline">GitHub Settings</a>
-                        </p>
-                    </div>
+      <!-- Configuration Form -->
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-gray-800 rounded-xl border border-git-border p-6 mb-8">
+          <h2 class="text-xl font-semibold mb-6 flex items-center">
+            <i class="fas fa-cog mr-2 text-git-accent"></i>
+            Scanner Configuration
+          </h2>
 
-                    <!-- Search Terms -->
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Search Terms</label>
-                        <textarea id="searchTerms" rows="3"
-                                  class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-git-accent focus:border-transparent"
-                                  placeholder="@company.com,github.com,ghp_,AKIA,api.company.com"
-                                  required></textarea>
-                        <p class="text-xs text-gray-400 mt-1">
-                            <i class="fas fa-lightbulb mr-1"></i>
-                            Separate multiple terms with commas. The scanner automatically detects the type of each term.
-                        </p>
-                    </div>
-
-                    <!-- Advanced Options -->
-                    <div class="border border-git-border rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-medium">Advanced Options</h3>
-                            <button type="button" onclick="toggleAdvanced()" 
-                                    class="text-git-accent hover:text-white text-sm">
-                                <i class="fas fa-chevron-down" id="advanced-chevron"></i>
-                                <span id="advanced-text">Show</span>
-                            </button>
-                        </div>
-                        
-                        <div id="advancedOptions" class="hidden space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Results per Page</label>
-                                    <select id="resultsPerPage" 
-                                            class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent">
-                                        <option value="10">10</option>
-                                        <option value="30" selected>30</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Pages</label>
-                                    <input type="number" id="pages" value="5" min="1" max="34"
-                                           class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Sleep Time (seconds)</label>
-                                    <input type="number" id="sleepTime" value="2" min="1" max="10"
-                                           class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent">
-                                </div>
-                            </div>
-                            
-                            <!-- Date Filter -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">Start Date (Optional)</label>
-                                    <input type="date" id="startDate"
-                                           class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">End Date (Optional)</label>
-                                    <input type="date" id="endDate"
-                                           class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent">
-                                </div>
-                            </div>
-                            
-                            <div class="bg-gray-700/50 rounded-lg p-3">
-                                <p class="text-sm text-gray-300">
-                                    <i class="fas fa-info-circle mr-2 text-git-warning"></i>
-                                    <strong>Date Filters:</strong> The scanner uses the repository's last push date. 
-                                    If too restrictive, the system will automatically fall back to a full search.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex justify-center">
-                        <button type="submit" id="scanButton"
-                                class="bg-gradient-to-r from-git-accent to-git-warning hover:from-git-accent/80 hover:to-git-warning/80 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2">
-                            <i class="fas fa-search"></i>
-                            <span>Start Scan</span>
-                        </button>
-                    </div>
-                </form>
+          <form id="scanForm" class="space-y-6">
+            <!-- GitHub Token -->
+            <div>
+              <label class="block text-sm font-medium mb-2">GitHub Token</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="githubToken"
+                  class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-git-accent focus:border-transparent"
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  required
+                />
+                <button
+                  type="button"
+                  onclick="togglePassword('githubToken')"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  <i class="fas fa-eye" id="githubToken-eye"></i>
+                </button>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">
+                <i class="fas fa-info-circle mr-1"></i>
+                Get it from:
+                <a
+                  href="https://github.com/settings/tokens"
+                  target="_blank"
+                  class="text-git-accent hover:underline"
+                  >GitHub Settings</a
+                >
+              </p>
             </div>
 
-            <!-- Results Section -->
-            <div id="resultsSection" class="hidden">
-                <!-- Status Panel -->
-                <div id="statusPanel" class="bg-gray-800 rounded-xl border border-git-border p-6 mb-6">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold">Scanner Status</h3>
-                        <button onclick="stopScan()" id="stopButton" class="hidden bg-git-accent hover:bg-git-accent/80 text-white px-4 py-2 rounded-lg text-sm">
-                            <i class="fas fa-stop mr-2"></i>Stop
-                        </button>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <div id="progressBar" class="w-full bg-gray-700 rounded-full h-2">
-                            <div id="progressFill" class="bg-gradient-to-r from-git-accent to-git-warning h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-400 mt-2">
-                            <span id="currentStatus">Waiting...</span>
-                            <span id="progressText">0%</span>
-                        </div>
-                    </div>
+            <!-- Search Terms -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Search Terms</label>
+              <textarea
+                id="searchTerms"
+                rows="3"
+                class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-git-accent focus:border-transparent"
+                placeholder="@company.com,github.com,ghp_,AKIA,api.company.com"
+                required
+              ></textarea>
+              <p class="text-xs text-gray-400 mt-1">
+                <i class="fas fa-lightbulb mr-1"></i>
+                Separate multiple terms with commas. The scanner automatically
+                detects the type of each term.
+              </p>
+            </div>
+
+            <!-- Advanced Options -->
+            <div class="border border-git-border rounded-lg p-4">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-medium">Advanced Options</h3>
+                <button
+                  type="button"
+                  onclick="toggleAdvanced()"
+                  class="text-git-accent hover:text-white text-sm"
+                >
+                  <i class="fas fa-chevron-down" id="advanced-chevron"></i>
+                  <span id="advanced-text">Show</span>
+                </button>
+              </div>
+
+              <div id="advancedOptions" class="hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-2"
+                      >Results per Page</label
+                    >
+                    <select
+                      id="resultsPerPage"
+                      class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent"
+                    >
+                      <option value="10">10</option>
+                      <option value="30" selected>30</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Pages</label>
+                    <input
+                      type="number"
+                      id="pages"
+                      value="5"
+                      min="1"
+                      max="34"
+                      class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium mb-2"
+                      >Sleep Time (seconds)</label
+                    >
+                    <input
+                      type="number"
+                      id="sleepTime"
+                      value="2"
+                      min="1"
+                      max="10"
+                      class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent"
+                    />
+                  </div>
                 </div>
 
-                <!-- Results Display -->
-                <div id="resultsDisplay" class="space-y-6">
-                    <!-- Results will be populated here -->
+                <!-- Date Filter -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-2"
+                      >Start Date (Optional)</label
+                    >
+                    <input
+                      type="date"
+                      id="startDate"
+                      class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium mb-2"
+                      >End Date (Optional)</label
+                    >
+                    <input
+                      type="date"
+                      id="endDate"
+                      class="w-full bg-gray-700 border border-git-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-git-accent"
+                    />
+                  </div>
                 </div>
+
+                <div class="bg-gray-700/50 rounded-lg p-3">
+                  <p class="text-sm text-gray-300">
+                    <i class="fas fa-info-circle mr-2 text-git-warning"></i>
+                    <strong>Date Filters:</strong> The scanner uses the
+                    repository's last push date. If too restrictive, the system
+                    will automatically fall back to a full search.
+                  </p>
+                </div>
+              </div>
             </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center">
+              <button
+                type="submit"
+                id="scanButton"
+                class="bg-gradient-to-r from-git-accent to-git-warning hover:from-git-accent/80 hover:to-git-warning/80 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2"
+              >
+                <i class="fas fa-search"></i>
+                <span>Start Scan</span>
+              </button>
+            </div>
+          </form>
         </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+          <!-- Status Panel -->
+          <div
+            id="statusPanel"
+            class="bg-gray-800 rounded-xl border border-git-border p-6 mb-6"
+          >
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Scanner Status</h3>
+              <button
+                onclick="stopScan()"
+                id="stopButton"
+                class="hidden bg-git-accent hover:bg-git-accent/80 text-white px-4 py-2 rounded-lg text-sm"
+              >
+                <i class="fas fa-stop mr-2"></i>Stop
+              </button>
+            </div>
+
+            <div class="mt-4">
+              <div id="progressBar" class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  id="progressFill"
+                  class="bg-gradient-to-r from-git-accent to-git-warning h-2 rounded-full transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="flex justify-between text-sm text-gray-400 mt-2">
+                <span id="currentStatus">Waiting...</span>
+                <span id="progressText">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Display -->
+          <div id="resultsDisplay" class="space-y-6">
+            <!-- Results will be populated here -->
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Footer -->
     <footer class="border-t border-git-border mt-16 py-8">
-        <div class="container mx-auto px-6 text-center text-gray-400">
-            <p class="text-sm">
-                <i class="fas fa-shield-alt mr-2"></i>
-                CodePhoenix - Developed with ❤️ for cybersecurity
-            </p>
-            <p class="text-xs mt-2">
-                Use responsibly. Respect GitHub's terms of use and privacy policies.
-            </p>
-        </div>
+      <div class="container mx-auto px-6 text-center text-gray-400">
+        <p class="text-sm">
+          <i class="fas fa-shield-alt mr-2"></i>
+          CodePhoenix - Developed with ❤️ for cybersecurity
+        </p>
+        <p class="text-xs mt-2">
+          Use responsibly. Respect GitHub's terms of use and privacy policies.
+        </p>
+      </div>
     </footer>
 
-    <script src="app.js"></script>
-    <script src="python_bridge.js"></script>
-</body>
+    <script src="js/app.js"></script>
+    <script src="js/bridge.js"></script>
+  </body>
 </html>
-

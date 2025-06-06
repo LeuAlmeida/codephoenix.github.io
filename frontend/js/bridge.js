@@ -61,9 +61,23 @@ function showCommandInterface(command) {
             <div class="space-y-4">
                 <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4">
                     <h4 class="font-semibold text-blue-400 mb-2">How to execute:</h4>
+                    <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-3 mb-3">
+                        <p class="text-yellow-400 text-sm">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Security Notice:</strong> This scanner requires Python execution. For your security:
+                        </p>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-yellow-300 mt-2 ml-2">
+                            <li>Clone the official scanner repository</li>
+                            <li>Review the code before execution</li>
+                            <li>Never run commands from untrusted sources</li>
+                        </ul>
+                    </div>
                     <ol class="list-decimal list-inside space-y-2 text-sm text-gray-300">
+                        <li>Clone the scanner repository:
+                            <pre class="bg-gray-900 p-2 mt-1 rounded text-xs">git clone https://github.com/LeuAlmeida/codephoenix-threat-hunting scanner</pre>
+                        </li>
                         <li>Copy the command above</li>
-                        <li>Open Terminal in the project directory</li>
+                        <li>Open Terminal in the scanner directory</li>
                         <li>Paste and run the command</li>
                         <li>Wait for execution to complete</li>
                         <li>Select the results file below</li>
@@ -73,7 +87,9 @@ function showCommandInterface(command) {
                 <div class="flex items-center space-x-4">
                     <label class="flex-1">
                         <span class="sr-only">Select results file</span>
+                        <label for="resultFileInput">Select results file</label>
                         <input type="file" 
+                               id="resultFileInput"
                                accept=".json"
                                onChange="handleResultFileSelect(event)"
                                class="block w-full text-sm text-gray-400

@@ -1,155 +1,168 @@
 # 🔍 GitHub Security Scanner
 
-Scanner inteligente para detecção de informações sensíveis em repositórios GitHub com:
-- 🧠 **Detecção inteligente** de 10 tipos de dados (emails, tokens, URLs, etc.)
-- 🔄 **Reload automático** de configurações
-- 💯 **Múltiplas estratégias** de busca por tipo
-- 🛡️ **Rate limiting** inteligente
-- **96.3% de precisão** na detecção de tipos
+Intelligent scanner for detecting sensitive information in GitHub repositories with:
+- 🧠 **Smart detection** of 10 data types (emails, tokens, URLs, etc.)
+- 🔄 **Automatic reload** of configurations
+- 💯 **Multiple search strategies** per type
+- 🛡️ **Intelligent rate limiting**
+- **96.3% accuracy** in type detection
 
-## Configuração
+## Project Structure
 
-### 1. Pré-requisitos
-- Python 3.7 ou superior
-- Token de acesso pessoal do GitHub
+```bash
+codephoenix/
+├── frontend/              # Frontend files
+│   ├── assets/           # Static assets
+│   │   └── icons/       # Icons and images
+│   ├── js/              # JavaScript files
+│   │   ├── app.js       # Main application logic
+│   │   └── bridge.js    # Scanner bridge
+│   ├── css/             # CSS files
+│   └── index.html       # Main HTML file
+├── scanner/              # Scanner core files
+│   ├── core/            # Core scanning functionality
+│   │   ├── __init__.py
+│   │   ├── github_scan.py
+│   │   └── data_types.py
+│   ├── bridge/          # Frontend integration
+│   │   ├── __init__.py
+│   │   ├── frontend_bridge.py
+│   │   └── simple_scanner.py
+│   └── tests/           # Test files
+│       └── test_date_comparison.py
+├── scripts/             # Shell scripts
+│   ├── serve.sh        # Frontend server
+│   └── run.sh          # Scanner execution
+├── requirements.txt     # Python dependencies
+├── .env.example        # Environment variables example
+└── README.md           # This file
+```
 
-### 2. Instalação
+## Setup
 
-1. Clone ou baixe este repositório
-2. Ative o ambiente virtual:
+### 1. Prerequisites
+- Python 3.7 or higher
+- GitHub Personal Access Token
+
+### 2. Installation
+
+1. Clone this repository
+2. Create and activate virtual environment:
    ```bash
+   python3 -m venv venv
    source venv/bin/activate
    ```
 
-3. Se necessário, instale as dependências:
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-### 3. Configuração do Token e Variáveis de Ambiente
+### 3. Configure Token and Environment Variables
 
-1. Vá para [GitHub Settings > Personal Access Tokens](https://github.com/settings/tokens)
-2. Clique em "Generate new token (classic)"
-3. Selecione as permissões necessárias (pelo menos `public_repo` para repositórios públicos)
-4. Copie o token gerado
-5. Configure o arquivo `.env` com suas credenciais:
+1. Go to [GitHub Settings > Personal Access Tokens](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Select required permissions (at least `public_repo` for public repositories)
+4. Copy the generated token
+5. Configure your `.env` file:
    ```bash
-   # Copie o arquivo de exemplo
+   # Copy example file
    cp .env.example .env
    
-   # Edite o arquivo .env e substitua os valores
+   # Edit .env and replace values
    ```
-6. No arquivo `.env`, substitua:
+6. In `.env`, replace:
    ```bash
-   GITHUB_TOKEN=seu_token_real_aqui
-   SEARCH_TERM=termo_que_voce_quer_buscar
+   GITHUB_TOKEN=your_real_token_here
+   SEARCH_TERM=term_to_search
    START_DATE=2023-01-01
    END_DATE=2023-12-31
    ```
 
-### 4. Executar o script
+## Usage
+
+### Running the Scanner
 
 ```bash
-# Certifique-se de que o ambiente virtual está ativo
+# Make sure virtual environment is active
 source venv/bin/activate
 
-# Execute o script
-sh run.sh
+# Run the scanner
+./scripts/run.sh
 ```
 
-## Configurações
+### Running the Frontend
 
-Todas as configurações agora são feitas através do arquivo `.env`:
-
-- `GITHUB_TOKEN`: Seu token de acesso pessoal do GitHub
-- `SEARCH_TERM`: Um ou mais termos separados por vírgula (ex: termo1,termo2)
-- `START_DATE`: (opcional) Data inicial no formato YYYY-MM-DD para filtrar arquivos criados a partir desta data
-- `END_DATE`: (opcional) Data final no formato YYYY-MM-DD para filtrar arquivos criados até esta data
-- `RESULTS_PER_PAGE`: Número de resultados por página (máximo 100)
-- `PAGES`: Número de páginas para buscar
-- `SLEEP_TIME`: Intervalo entre requisições (em segundos)
-
-Exemplo do arquivo `.env`:
 ```bash
-GITHUB_TOKEN=ghp_seu_token_aqui
-SEARCH_TERM=exemplo.com,senha,apiKey
-RESULTS_PER_PAGE=50
-PAGES=10
-SLEEP_TIME=3
-START_DATE=2023-01-01
-END_DATE=2023-12-31
+# Start the frontend server
+./scripts/serve.sh
+
+# Access in browser
+open http://localhost:8080
 ```
 
-## 🧠 **Recursos Inteligentes**
+## Configuration
 
-### 🔍 **Detecção Automática de Tipos**
-O scanner detecta automaticamente o tipo de dado que você está buscando:
+All settings are configured through the `.env` file:
 
-- **📧 Emails**: `user@company.com`
-- **🌐 URLs**: `https://api.company.com` 
-- **🔑 GitHub Tokens**: `ghp_abc123...`
-- **🗝️ API Keys**: `sk-abc123...`, `AKIA123...`
-- **🎫 Bearer Tokens**: `Bearer eyJhbGci...`
-- **☁️ AWS Credentials**: `AKIA...`, `wJalrXUt...`
-- **🎟️ JWT Tokens**: `eyJhbGci.eyJzdWI.signature`
-- **🗄️ Database URLs**: `mongodb://...`, `mysql://...`
-- **🔐 Passwords**: `admin_password`, `secret_key`
+- `GITHUB_TOKEN`: Your GitHub personal access token
+- `SEARCH_TERM`: One or more terms separated by commas (e.g., term1,term2)
+- `START_DATE`: (optional) Start date in YYYY-MM-DD format to filter files created from this date
+- `END_DATE`: (optional) End date in YYYY-MM-DD format to filter files created until this date
+- `RESULTS_PER_PAGE`: (optional) Number of results per page (10-100, default: 30)
+- `PAGES`: (optional) Number of pages to scan (1-34, default: 5)
+- `SLEEP_TIME`: (optional) Delay between requests in seconds (1-10, default: 2)
 
-### 💯 **Múltiplas Estratégias de Busca**
-Para cada tipo, o scanner tenta diferentes abordagens:
-- Busca direta do termo
-- Variações com e sem aspas
-- Padrões de nomeação comuns
-- Headers de autorização
-- Contextos específicos (mailto:, url:, etc.)
+## Development
 
-### 🔄 **Reload Automático**
-- O arquivo `.env` é recarregado a cada execução
-- Modifique configurações sem reiniciar o script
+### Running Tests
 
-### 🛡️ **Rate Limiting Inteligente**
-- Detecta automaticamente limites da API
-- Mostra requests restantes
-- Pausas automáticas quando necessário
-
-### 📅 **Filtro de Data Inteligente**
-- Detecta automaticamente se filtros são muito restritivos
-- Faz fallback para busca completa quando necessário
-- Usa `pushed:` (data do último push) em vez de `created:`
-- Informa o usuário sobre decisões tomadas
-
-## 📚 **Documentação Adicional**
-
-- **[FEATURES.md](./docs/FEATURES.md)** - Documentação completa dos recursos
-- **[SECURITY_PATTERNS.md](./docs/SECURITY_PATTERNS.md)** - Padrões de busca por categoria
-- **[DATE_FILTER_GUIDE.md](./docs/DATE_FILTER_GUIDE.md)** - Guia completo de filtros de data
-- **[test_data_types.py](test_data_types.py)** - Teste dos tipos de detecção
-- **[test_date_comparison.py](test_date_comparison.py)** - Teste de comparação de filtros
-
-## 🚀 **Exemplos Rápidos**
-
-### Buscar emails de uma empresa
 ```bash
-SEARCH_TERM=@company.com,@corp.company.com
+# Run date comparison test
+python -m scanner.tests.test_date_comparison
 ```
 
-### Buscar tokens e credenciais
-```bash
-SEARCH_TERM=ghp_,sk-,AKIA,Bearer
-```
+### Frontend Development
 
-### Buscar URLs internas
-```bash
-SEARCH_TERM=internal.company.com,api.company.local
-```
+1. Start the frontend server:
+   ```bash
+   ./scripts/serve.sh
+   ```
 
-## Limitações da API
+2. Edit files in `frontend/` directory
+3. Refresh browser to see changes
 
-- A API do GitHub tem limites de rate limiting
-- Máximo de 1000 resultados por busca (10 páginas × 100 resultados)
-- Recomenda-se usar intervalos entre requisições para evitar bloqueios
+### Scanner Development
 
-## Nota de Segurança
+1. Core functionality is in `scanner/core/`
+2. Frontend integration is in `scanner/bridge/`
+3. Run scanner directly:
+   ```bash
+   python -m scanner.core.github_scan
+   ```
 
-⚠️ **IMPORTANTE**: Nunca faça commit do seu token de acesso pessoal no repositório. Mantenha-o privado e seguro.
+## Security Best Practices
+
+1. **Token Security**
+   - Never commit tokens to repositories
+   - Use tokens with minimal required permissions
+   - Rotate tokens regularly
+
+2. **Rate Limiting**
+   - The scanner includes automatic rate limiting
+   - Adjust `SLEEP_TIME` if hitting limits
+   - Consider using authenticated requests
+
+3. **Data Handling**
+   - Delete scan results after use
+   - Don't store sensitive data
+   - Use secure storage for tokens
+
+## License
+
+This project is licensed under the MIT License. Use responsibly and respect GitHub's terms of service.
+
+---
+
+**GitHub Security Scanner** - Smart Security Scanning 🔒
 
