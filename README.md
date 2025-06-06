@@ -1,3 +1,7 @@
+<p align="center">
+   <img src="./frontend/assets/icons/icon.png" align="center" alt="drawing" width="150px"/><br />
+</p>
+
 # CodePhoenix | GitHub Security Scanner
 
 Intelligent scanner for detecting sensitive information in GitHub repositories with:
