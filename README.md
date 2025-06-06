@@ -112,11 +112,19 @@ Para cada tipo, o scanner tenta diferentes abordagens:
 - Mostra requests restantes
 - Pausas automáticas quando necessário
 
+### 📅 **Filtro de Data Inteligente**
+- Detecta automaticamente se filtros são muito restritivos
+- Faz fallback para busca completa quando necessário
+- Usa `pushed:` (data do último push) em vez de `created:`
+- Informa o usuário sobre decisões tomadas
+
 ## 📚 **Documentação Adicional**
 
-- **[FEATURES.md](FEATURES.md)** - Documentação completa dos recursos
-- **[SECURITY_PATTERNS.md](SECURITY_PATTERNS.md)** - Padrões de busca por categoria
+- **[FEATURES.md](./docs/FEATURES.md)** - Documentação completa dos recursos
+- **[SECURITY_PATTERNS.md](./docs/SECURITY_PATTERNS.md)** - Padrões de busca por categoria
+- **[DATE_FILTER_GUIDE.md](./docs/DATE_FILTER_GUIDE.md)** - Guia completo de filtros de data
 - **[test_data_types.py](test_data_types.py)** - Teste dos tipos de detecção
+- **[test_date_comparison.py](test_date_comparison.py)** - Teste de comparação de filtros
 
 ## 🚀 **Exemplos Rápidos**
 

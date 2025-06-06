@@ -186,16 +186,34 @@ def search_github(term, page, date_range=None):
     """Busca no GitHub com estratégias inteligentes baseadas no tipo de dado"""
     import urllib.parse
     
-    # Detecta o tipo de dado
     data_type = detect_data_type(term)
     print(f"🔍 Tipo detectado: {data_type.upper()}")
     
-    # Gera queries específicas para o tipo
     queries = generate_search_queries(term, data_type)
     
-    # Adiciona filtro de data se especificado
     if date_range:
-        queries = [f'{q} created:{date_range}' for q in queries]
+        test_query = f'{queries[0]} {date_range}'
+        encoded_test = urllib.parse.quote(test_query)
+        test_url = f'https://api.github.com/search/code?q={encoded_test}&per_page=1'
+        
+        print(f"🗒️ Testando filtro de data...")
+        test_response = requests.get(test_url, headers=headers)
+        
+        if test_response.status_code == 200:
+            test_count = test_response.json().get('total_count', 0)
+            if test_count > 0:
+                print(f"✅ Filtro de data válido: {test_count} resultados encontrados")
+                queries = [f'{q} {date_range}' for q in queries]
+            else:
+                print(f"⚠️  Filtro de data muito restritivo (0 resultados). Removendo filtro...")
+                print(f"Buscando em todo o histórico para melhor cobertura")
+                date_range = None  # Remove o filtro
+        else:
+            print(f"⚠️  Erro ao testar filtro de data: {test_response.status_code}")
+            print(f"Continuando sem filtro de data")
+            date_range = None
+        
+        time.sleep(0.5)  # Pequena pausa após teste
     
     for i, query in enumerate(queries):
         print(f"🔍 Tentativa {i+1}/{len(queries)} - Query: {query}")
@@ -244,7 +262,15 @@ def main():
     
     date_range = None
     if START_DATE and END_DATE:
-        date_range = f'{START_DATE}..{END_DATE}'
+        if START_DATE >= '2008-01-01':
+            date_range = f'pushed:{START_DATE}..{END_DATE}'
+            print(f"📅 Filtro de data: repositórios com push entre {START_DATE} e {END_DATE}")
+        else:
+            date_range = f'created:{START_DATE}..{END_DATE}'
+            print(f"📅 Filtro de data: repositórios criados entre {START_DATE} e {END_DATE}")
+    else:
+        print("📅 Sem filtro de data - buscando em todo o histórico")
+    
     print(f"🔍 Buscando por: {', '.join(SEARCH_TERMS)}")
     
     if not SEARCH_TERMS:
