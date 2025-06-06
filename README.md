@@ -1,4 +1,4 @@
-# 🔍 GitHub Security Scanner
+# CodePhoenix | GitHub Security Scanner
 
 Intelligent scanner for detecting sensitive information in GitHub repositories with:
 - 🧠 **Smart detection** of 10 data types (emails, tokens, URLs, etc.)
@@ -6,6 +6,8 @@ Intelligent scanner for detecting sensitive information in GitHub repositories w
 - 💯 **Multiple search strategies** per type
 - 🛡️ **Intelligent rate limiting**
 - **96.3% accuracy** in type detection
+
+![Project screenshot](./docs/screenshot.png)
 
 ## Project Structure
 

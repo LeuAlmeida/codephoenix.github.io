@@ -37,7 +37,7 @@ cd github-scanner
 git clone https://github.com/your-username/codephoenix-frontend
 
 # Clone scanner
-git clone https://github.com/LeuAlmeida/codephoenix-threat-hunting scanner
+git clone https://github.com/LeuAlmeida/codephoenix.github.io scanner
 ```
 
 ### 2. Setup Scanner
