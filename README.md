@@ -178,8 +178,3 @@ python -m scanner.tests.test_date_comparison
 ## License
 
 This project is licensed under the MIT License. Use responsibly and respect GitHub's terms of service.
-
----
-
-**GitHub Security Scanner** - Smart Security Scanning 🔒
-
